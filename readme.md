@@ -1,0 +1,1 @@
+Series of practical assignments implemented in the context of the 3rd Semester PSC class @ISEL
