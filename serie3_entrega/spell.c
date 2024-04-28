@@ -102,7 +102,7 @@ void printIncorrectWords (const char *filename, Dictionary *dictionary, char* se
     
     const char delimiters[] = " \t\n.,;:!?\"()'[]{}<>&^%$#@+-=*/";
     
-    GHashTable *map = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
+    GHashTable *map = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
     
     int current_line = 1;
     int current_col;
@@ -123,10 +123,11 @@ void printIncorrectWords (const char *filename, Dictionary *dictionary, char* se
 
         while (token != NULL) {
 
-            char *word = g_strdup(token);  
-            size_t len = strlen(word);
+            size_t len = strlen(token);
+ 
+            if (!dictionary_lookup(dictionary, token) && len > 0) {  
 
-            if (!dictionary_lookup(dictionary, word) && len > 0) {  
+                char *word = g_strdup(token); 
 
                 TextCoords *coords = g_new(TextCoords, 1);
                 coords->line = current_line;
@@ -181,7 +182,7 @@ void printIncorrectWords (const char *filename, Dictionary *dictionary, char* se
 
     g_hash_table_destroy(map);
 
-    g_list_free_full(words_list, g_free);
+    g_list_free(words_list);
 
     fclose(file);
 
